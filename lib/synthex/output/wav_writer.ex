@@ -42,18 +42,11 @@ defmodule Synthex.Output.WavWriter do
   end
 
   def write_samples(writer, samples) do
-    GenServer.call(writer, {:write_samples, encode_samples(samples)})
+    GenServer.call(writer, {:write_samples, samples})
   end
 
   def close(writer) do
     GenServer.call(writer, :close)
-  end
-
-  defp encode_samples(samples) when is_list(samples) do
-    Enum.reduce(samples, <<>>, fn(sample, acc) -> acc <> <<sample::little-integer-size(16)>> end)
-  end
-  defp encode_samples(sample) do
-    <<sample::little-integer-size(16)>>
   end
 
   def init(%{path: path, header: header}) do
@@ -63,9 +56,10 @@ defmodule Synthex.Output.WavWriter do
     {:ok, %{header: header, file: file, data_chunk_size: 0}}
   end
 
-  def handle_call({:write_samples, samples}, _from, state = %{file: file, data_chunk_size: data_chunk_size}) do
-    :ok = :file.write(file, samples)
-    {:reply, :ok, %{state | data_chunk_size: data_chunk_size + byte_size(samples)}}
+  def handle_call({:write_samples, samples}, _from, state = %{header: header, file: file, data_chunk_size: data_chunk_size}) do
+    encoded_samples = encode_samples(samples, header)
+    :ok = :file.write(file, encoded_samples)
+    {:reply, :ok, %{state | data_chunk_size: data_chunk_size + byte_size(encoded_samples)}}
   end
   def handle_call(:close, _from, state = %{file: file, header: header, data_chunk_size: data_chunk_size}) do
     {:ok, _} = :file.position(file, :bof)
@@ -73,4 +67,20 @@ defmodule Synthex.Output.WavWriter do
     :ok = :file.close(file)
     {:stop, :normal, state}
   end
+
+  defp encode_samples(samples, header) when is_list(samples) do
+    Enum.reduce(samples, <<>>, fn(sample, acc) -> acc <> encode_samples(sample, header) end)
+  end
+  defp encode_samples(sample, header = %Synthex.Output.WavHeader{format: :lpcm, sample_size: sample_size}) when is_float(sample) do
+    sample |> float_to_int_sample(sample_size) |> encode_samples(header)
+  end
+  defp encode_samples(sample, %Synthex.Output.WavHeader{format: :lpcm, sample_size: sample_size}) when is_integer(sample) do
+    <<sample::little-integer-size(sample_size)>>
+  end
+
+  defp float_to_int_sample(sample, 8), do: round(sample * 127)
+  defp float_to_int_sample(sample, 16), do: round(sample * 32767)
+  defp float_to_int_sample(sample, 24), do: round(sample * 8388607)
+  defp float_to_int_sample(sample, 32), do: round(sample * 2147483647)
+
 end
