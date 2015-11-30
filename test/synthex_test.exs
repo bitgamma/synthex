@@ -7,12 +7,12 @@ defmodule SynthexTest do
 
   @duration 5
 
-  @oscillator Synthex.Oscillator.Square
-  @oscillator_frequency 110
+  @oscillator Synthex.Oscillator.Sawtooth
+  @oscillator_frequency 220
 
-  @lfo Synthex.Oscillator.Sawtooth
+  @lfo Synthex.Oscillator.Sine
   @lfo_weight 1.0
-  @lfo_frequency 2
+  @lfo_frequency 5
 
   test "generate test file" do
     header = %WavHeader{channels: 1}
@@ -20,11 +20,16 @@ defmodule SynthexTest do
     oscillator = @oscillator.init([frequency: @oscillator_frequency, rate: header.rate])
     lfo = @lfo.init([frequency: @lfo_frequency, rate: header.rate])
 
-    Enum.each(0..(header.rate * @duration), fn (t) ->
+    Synthex.synthesize(writer, (header.rate * @duration), fn (t) ->
       sample = @oscillator.get_sample(oscillator, t)
       lfo = @lfo.get_sample(lfo, t)
-      WavWriter.write_samples(writer, sample * lfo * @lfo_weight)
+      sample * lfo * @lfo_weight
     end)
+
+    Synthex.synthesize(writer, (header.rate * @duration), fn (t) ->
+      @oscillator.get_sample(oscillator, t)
+    end)
+
     WavWriter.close(writer)
   end
 end

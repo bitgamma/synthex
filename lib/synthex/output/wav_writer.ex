@@ -42,10 +42,6 @@ defmodule Synthex.Output.WavWriter do
     GenServer.start_link(__MODULE__, %{path: path, header: header})
   end
 
-  def write_samples(writer, samples) do
-    GenServer.call(writer, {:write_samples, samples})
-  end
-
   def close(writer) do
     GenServer.call(writer, :close)
   end
