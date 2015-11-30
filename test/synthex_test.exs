@@ -5,7 +5,7 @@ defmodule SynthexTest do
   alias Synthex.Output.WavWriter
   alias Synthex.Output.WavHeader
 
-  @duration 200
+  @duration 5
 
   @oscillator Synthex.Oscillator.Sine
   @oscillator_frequency 5
@@ -31,7 +31,7 @@ defmodule SynthexTest do
 
     Synthex.synthesize(writer, (header.rate * @duration), fn (t) ->
       lfo_sample = @lfo.get_sample(lfo, t)
-      osc = @oscillator.init([frequency: generate_frequency(170, 270, lfo_sample), rate: header.rate])
+      osc = @oscillator.init([frequency: generate_frequency(160, 260, lfo_sample), rate: header.rate])
       @oscillator.get_sample(osc, t)
     end)
 
