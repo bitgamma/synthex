@@ -29,6 +29,7 @@ defmodule Synthex.Output.WavHeader do
   defp padding_length(_data_chunk_size), do: 0
 
   defp encoded_format(:lpcm), do: 0x0001
+  defp encoded_format(:float), do: 0x0003
 
 end
 
@@ -77,10 +78,15 @@ defmodule Synthex.Output.WavWriter do
   defp encode_samples(sample, %Synthex.Output.WavHeader{format: :lpcm, sample_size: sample_size}) when is_integer(sample) do
     <<sample::little-integer-size(sample_size)>>
   end
+  defp encode_samples(sample, %Synthex.Output.WavHeader{format: :float, sample_size: 32}) when is_float(sample) do
+    <<sample::little-float-size(32)>>
+  end
+  defp encode_samples(_, _) do
+    raise "Supported input formats are integers and float. Supported encoding formats are integer 8/16/24/32 bit and float 32 bit"
+  end
 
   defp float_to_int_sample(sample, 8), do: round(sample * 127)
   defp float_to_int_sample(sample, 16), do: round(sample * 32767)
   defp float_to_int_sample(sample, 24), do: round(sample * 8388607)
   defp float_to_int_sample(sample, 32), do: round(sample * 2147483647)
-
 end
