@@ -3,7 +3,7 @@ defmodule Synthex do
     do_synthesize(writer, sample_count, func, 0)
   end
 
-  defp do_synthesize(writer, sample_count, func, sample_count), do: :ok
+  defp do_synthesize(_writer, sample_count, _func, sample_count), do: :ok
   defp do_synthesize(writer, sample_count, func, t) do
     sample = func.(t)
     Synthex.Output.Writer.write_samples(writer, sample)
