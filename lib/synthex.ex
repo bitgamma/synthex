@@ -1,0 +1,2 @@
+defmodule Synthex do
+end
