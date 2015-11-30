@@ -1,9 +1,11 @@
 defmodule Synthex.Oscillator.Sine do
+  use Synthex.Math
+
   def init(opts) do
     frequency = Keyword.fetch!(opts, :frequency)
     rate = Keyword.fetch!(opts, :rate)
 
-    phase_delta = (2 * :math.pi() * frequency) / rate
+    phase_delta = (@tau * frequency) / rate
     %{phase_delta: phase_delta}
   end
 

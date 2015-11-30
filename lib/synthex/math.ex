@@ -1,4 +1,14 @@
 defmodule Synthex.Math do
+  defmacro __using__(_) do
+    quote do
+      import Synthex.Math
+      @pi :math.pi()
+      @tau @pi * 2
+      @one_on_pi 1/@pi
+      @two_on_pi 2/@pi
+    end
+  end
+
   defmacro fmod(val, divider) do
     quote do
       unquote(val) - (Float.floor(unquote(val)/unquote(divider)) * unquote(divider))
