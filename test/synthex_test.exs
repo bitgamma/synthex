@@ -4,18 +4,15 @@ defmodule SynthexTest do
 
   alias Synthex.Output.WavWriter
   alias Synthex.Output.WavHeader
+  require Synthex.Math
 
   @duration 5
 
   @oscillator Synthex.Oscillator.Sine
-  @oscillator_frequency 5
+  @oscillator_frequency 0.5
 
-  @lfo Synthex.Oscillator.Sawtooth
-  @lfo_frequency 2
-
-  defp generate_frequency(min, max, magnitude) do
-    ((magnitude + 1) * ((max - min)/2)) + min
-  end
+  @lfo Synthex.Oscillator.Triangle
+  @lfo_frequency 18
 
   test "generate test file" do
     header = %WavHeader{channels: 1}
@@ -31,7 +28,8 @@ defmodule SynthexTest do
 
     Synthex.synthesize(writer, (header.rate * @duration), fn (t) ->
       lfo_sample = @lfo.get_sample(lfo, t)
-      osc = @oscillator.init([frequency: generate_frequency(160, 260, lfo_sample), rate: header.rate])
+      frequency = Synthex.Math.amplitude_to_rounded_frequency(lfo_sample, 110, 220)
+      osc = @oscillator.init([frequency: frequency, rate: header.rate])
       @oscillator.get_sample(osc, t)
     end)
 
