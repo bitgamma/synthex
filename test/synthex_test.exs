@@ -8,29 +8,29 @@ defmodule SynthexTest do
 
   @duration 5
 
-  @oscillator Synthex.Oscillator.Sine
+  @oscillator Synthex.Oscillator.Triangle
   @oscillator_frequency 0.5
 
-  @lfo Synthex.Oscillator.Triangle
-  @lfo_frequency 18
+  @mfo Synthex.Oscillator.Sine
+  @mfo_frequency 100
+
+  @lfo Synthex.Oscillator.Sawtooth
+  @lfo_frequency 5
 
   test "generate test file" do
     header = %WavHeader{channels: 1}
     {:ok, writer} = WavWriter.open("/Users/brain/tmp.wav", header)
-    oscillator = @oscillator.init([frequency: @oscillator_frequency, rate: header.rate])
     lfo = @lfo.init([frequency: @lfo_frequency, rate: header.rate])
-
-    Synthex.synthesize(writer, 0, fn (t) ->
-      sample = @oscillator.get_sample(oscillator, t)
-      lfo_sample = @lfo.get_sample(lfo, t)
-      sample * lfo_sample
-    end)
 
     Synthex.synthesize(writer, (header.rate * @duration), fn (t) ->
       lfo_sample = @lfo.get_sample(lfo, t)
-      frequency = Synthex.Math.amplitude_to_rounded_frequency(lfo_sample, 110, 220)
-      osc = @oscillator.init([frequency: frequency, rate: header.rate])
-      @oscillator.get_sample(osc, t)
+
+      mfo = @mfo.init([frequency: Synthex.Math.amplitude_to_rounded_frequency(lfo_sample, 10, 30), rate: header.rate])
+      mfo_sample = @mfo.get_sample(mfo, t)
+
+      osc = @oscillator.init([frequency: Synthex.Math.amplitude_to_rounded_frequency(mfo_sample, 110, 880), rate: header.rate])
+      osc_sample = @oscillator.get_sample(osc, t)
+      osc_sample * lfo_sample * mfo_sample
     end)
 
     WavWriter.close(writer)
