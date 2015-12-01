@@ -29,7 +29,11 @@ defmodule Synthex.Math do
 
   defmacro duration_in_secs_to_sample_count(duration, rate) do
     quote do
-      Float.ceil(unquote(rate) * unquote(duration)) |> trunc
+      if is_float(unquote(duration)) do
+        Float.ceil(unquote(duration) * unquote(rate)) |> trunc
+      else
+        unquote(duration) * unquote(rate)
+      end
     end
   end
 
