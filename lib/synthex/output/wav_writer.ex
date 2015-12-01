@@ -81,8 +81,12 @@ defmodule Synthex.Output.WavWriter do
     raise "Supported input formats are integers and float. Supported encoding formats are integer 8/16/24/32 bit and float 32 bit"
   end
 
+  defp float_to_int_sample(sample, 8) when sample < 0, do: round(sample * 128)
   defp float_to_int_sample(sample, 8), do: round(sample * 127)
+  defp float_to_int_sample(sample, 16) when sample < 0, do: round(sample * 32768)
   defp float_to_int_sample(sample, 16), do: round(sample * 32767)
+  defp float_to_int_sample(sample, 24) when sample < 0, do: round(sample * 8388608)
   defp float_to_int_sample(sample, 24), do: round(sample * 8388607)
+  defp float_to_int_sample(sample, 32) when sample < 0, do: round(sample * 2147483648)
   defp float_to_int_sample(sample, 32), do: round(sample * 2147483647)
 end

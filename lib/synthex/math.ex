@@ -26,4 +26,8 @@ defmodule Synthex.Math do
       round(unquote(__MODULE__).amplitude_to_frequency(unquote(magnitude), unquote(min), unquote(max)))
     end
   end
+
+  def clamp(sample) when sample < -1.0, do: -1.0
+  def clamp(sample) when sample > 1.0, do: 1.0
+  def clamp(sample), do: sample
 end

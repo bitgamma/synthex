@@ -8,7 +8,7 @@ defmodule SynthexTest do
 
   @duration 5
 
-  @oscillator Synthex.Oscillator.Triangle
+  @oscillator Synthex.Oscillator.Square
   @oscillator_frequency 0.5
 
   @mfo Synthex.Oscillator.Sine
@@ -25,12 +25,12 @@ defmodule SynthexTest do
     Synthex.synthesize(writer, (header.rate * @duration), fn (t) ->
       lfo_sample = @lfo.get_sample(lfo, t)
 
-      mfo = @mfo.init([frequency: Synthex.Math.amplitude_to_rounded_frequency(lfo_sample, 10, 30), rate: header.rate])
+      mfo = @mfo.init([frequency: Synthex.Math.amplitude_to_rounded_frequency(lfo_sample, 110, 880), rate: header.rate])
       mfo_sample = @mfo.get_sample(mfo, t)
 
-      osc = @oscillator.init([frequency: Synthex.Math.amplitude_to_rounded_frequency(mfo_sample, 110, 880), rate: header.rate])
+      osc = @oscillator.init([frequency: Synthex.Math.amplitude_to_rounded_frequency(mfo_sample, 100, 130), rate: header.rate])
       osc_sample = @oscillator.get_sample(osc, t)
-      osc_sample * lfo_sample * mfo_sample
+      Synthex.Math.clamp(osc_sample + mfo_sample)
     end)
 
     WavWriter.close(writer)
