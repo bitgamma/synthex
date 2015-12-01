@@ -1,8 +1,10 @@
 defmodule Synthex do
+  use Synthex.Math
   alias Synthex.Context
 
   def synthesize(ctx = %Context{rate: rate}, duration, func) do
-    do_synthesize(ctx, rate * duration, func, 0)
+    sample_count = duration_in_secs_to_sample_count(duration, rate)
+    do_synthesize(ctx, sample_count, func, 0)
   end
 
   defp do_synthesize(_ctx, sample_count, _func, sample_count), do: :ok

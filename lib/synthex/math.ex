@@ -27,6 +27,12 @@ defmodule Synthex.Math do
     end
   end
 
+  defmacro duration_in_secs_to_sample_count(duration, rate) do
+    quote do
+      Float.ceil(unquote(rate) * unquote(duration)) |> trunc
+    end
+  end
+
   def clamp(sample) when sample < -1.0, do: -1.0
   def clamp(sample) when sample > 1.0, do: 1.0
   def clamp(sample), do: sample
