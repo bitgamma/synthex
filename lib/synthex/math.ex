@@ -43,6 +43,12 @@ defmodule Synthex.Math do
     end
   end
 
+  defmacro shift_by(sample, amount) do
+    quote do
+      clamp(unquote(sample) + unquote(amount))
+    end
+  end
+
   def clamp(sample) when sample < -1.0, do: -1.0
   def clamp(sample) when sample > 1.0, do: 1.0
   def clamp(sample), do: sample
