@@ -16,14 +16,14 @@ defmodule SynthexTest do
     {:ok, writer} = WavWriter.open("/Users/brain/tmp.wav", header)
     context =
       %Context{output: writer, rate: header.rate}
-      |> Context.put_element(:main, :osc1, %Oscillator{algorithm: :pulse, frequency: 440, center: duty_cycle_to_radians(0.6)})
-      |> Context.put_element(:main, :noise, %Noise{type: :white})
+      |> Context.put_element(:main, :osc1, %Oscillator{algorithm: :sine, frequency: 0.1})
+      |> Context.put_element(:main, :noise, %Noise{type: :pink})
 
     Synthex.synthesize(context, @duration, fn (ctx) ->
       {ctx, osc1} = Context.get_sample(ctx, :main, :osc1)
       {ctx, noise} = Context.get_sample(ctx, :main, :noise)
 
-      {ctx, clamp((osc1 + (noise * 0.09)) * 0.45)}
+      {ctx, noise * osc1}
     end)
 
     WavWriter.close(writer)
