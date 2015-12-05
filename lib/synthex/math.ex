@@ -37,6 +37,12 @@ defmodule Synthex.Math do
     end
   end
 
+  defmacro duty_cycle_to_radians(duty_cycle) do
+    quote do
+      @tau * unquote(duty_cycle)
+    end
+  end
+
   def clamp(sample) when sample < -1.0, do: -1.0
   def clamp(sample) when sample > 1.0, do: 1.0
   def clamp(sample), do: sample

@@ -16,7 +16,7 @@ defmodule SynthexTest do
     {:ok, writer} = WavWriter.open("/Users/brain/tmp.wav", header)
     context =
       %Context{output: writer, rate: header.rate}
-      |> Context.put_element(:main, :osc1, %Oscillator{algorithm: :square, frequency: 440})
+      |> Context.put_element(:main, :osc1, %Oscillator{algorithm: :pulse, frequency: 440, center: duty_cycle_to_radians(0.6)})
       |> Context.put_element(:main, :noise, %Noise{})
 
     Synthex.synthesize(context, @duration, fn (ctx) ->
