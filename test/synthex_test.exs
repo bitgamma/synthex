@@ -9,7 +9,7 @@ defmodule SynthexTest do
   alias Synthex.Generator.Noise
   use Synthex.Math
 
-  @duration 5
+  @duration 20
 
   test "generate test file" do
     header = %WavHeader{channels: 1}
@@ -17,13 +17,13 @@ defmodule SynthexTest do
     context =
       %Context{output: writer, rate: header.rate}
       |> Context.put_element(:main, :osc1, %Oscillator{algorithm: :pulse, frequency: 440, center: duty_cycle_to_radians(0.6)})
-      |> Context.put_element(:main, :noise, %Noise{})
+      |> Context.put_element(:main, :noise, %Noise{type: :pink})
 
     Synthex.synthesize(context, @duration, fn (ctx) ->
       {ctx, osc1} = Context.get_sample(ctx, :main, :osc1)
       {ctx, noise} = Context.get_sample(ctx, :main, :noise)
 
-      {ctx, clamp(((osc1 + (noise * 0.09)) * 0.45) - 0.05)}
+      {ctx, noise}
     end)
 
     WavWriter.close(writer)
