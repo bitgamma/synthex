@@ -1,7 +1,12 @@
 defmodule Synthex.Filter.Moog do
+  @moduledoc """
+  Emulates the Moog VCF.
+
+  cutoff must be between 0 and 1
+  resonance must be between 0 and 4
+  """
   use Synthex.Math
 
-  alias Synthex.Context
   alias Synthex.Filter.Moog
 
   defstruct [cutoff: 1, resonance: 0, sample: 0.0, in: {0.0, 0.0, 0.0, 0.0}, out: {0.0, 0.0, 0.0, 0.0}]
