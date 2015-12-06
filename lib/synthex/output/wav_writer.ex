@@ -43,7 +43,7 @@ defmodule Synthex.Output.WavWriter do
   end
 
   def close(writer) do
-    GenServer.call(writer, :close)
+    GenServer.cast(writer, :close)
   end
 
   def init(%{path: path, header: header}) do
@@ -58,7 +58,8 @@ defmodule Synthex.Output.WavWriter do
     :ok = :file.write(file, encoded_samples)
     {:reply, :ok, %{state | data_chunk_size: data_chunk_size + byte_size(encoded_samples)}}
   end
-  def handle_call(:close, _from, state = %{file: file, header: header, data_chunk_size: data_chunk_size}) do
+
+  def handle_cast(:close, state = %{file: file, header: header, data_chunk_size: data_chunk_size}) do
     {:ok, _} = :file.position(file, :bof)
     :ok = Synthex.Output.WavHeader.write(header, file, data_chunk_size)
     :ok = :file.close(file)

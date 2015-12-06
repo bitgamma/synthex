@@ -8,7 +8,7 @@ defmodule Beats do
 
   def run(duration) do
     header = %WavHeader{channels: 1}
-    {:ok, writer} = WavWriter.open("/Users/brain/tmp.wav", header)
+    {:ok, writer} = WavWriter.open(System.user_home() <> "/beats.wav", header)
     context =
       %Context{output: writer, rate: header.rate}
       |> Context.put_element(:main, :osc1, %Oscillator{algorithm: :sawtooth, frequency: 1, sync_frequency: 2})

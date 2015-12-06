@@ -1,10 +1,10 @@
 # Synthex
 
-**TODO: Add description**
+A waveform synthesis library. Currently supports output to wav files.
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
+The package can be installed as:
 
   1. Add synthex to your list of dependencies in `mix.exs`:
 
