@@ -26,4 +26,3 @@ defmodule Filter do
 end
 
 Filter.run(5)
-:timer.sleep(1000)

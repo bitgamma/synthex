@@ -50,6 +50,8 @@ defmodule Synthex.Output.WavWriter do
     {:ok, file} = :file.open(path, [:write, :raw, :binary, :delayed_write])
     {:ok, _} = :file.position(file, @header_length)
 
+    Process.flag(:trap_exit, true)
+
     {:ok, %{header: header, file: file, data_chunk_size: 0}}
   end
 
@@ -59,11 +61,14 @@ defmodule Synthex.Output.WavWriter do
     {:reply, :ok, %{state | data_chunk_size: data_chunk_size + byte_size(encoded_samples)}}
   end
 
-  def handle_cast(:close, state = %{file: file, header: header, data_chunk_size: data_chunk_size}) do
+  def handle_cast(:close, state) do
+    {:stop, :normal, state}
+  end
+
+  def terminate(_signal, %{file: file, header: header, data_chunk_size: data_chunk_size}) do
     {:ok, _} = :file.position(file, :bof)
     :ok = Synthex.Output.WavHeader.write(header, file, data_chunk_size)
     :ok = :file.close(file)
-    {:stop, :normal, state}
   end
 
   defp encode_samples(samples, header) when is_list(samples) do
