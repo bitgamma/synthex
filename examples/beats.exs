@@ -19,7 +19,7 @@ defmodule Beats do
     Synthex.synthesize(context, duration, fn (ctx) ->
       {ctx, osc3} = Context.get_sample(ctx, :main, :osc3)
 
-      {ctx, osc1} = Context.get_sample(ctx, :main, :osc1, %{frequency: amplitude_to_frequency(osc3, 0.8, 4), sync_frequency: amplitude_to_frequency(osc3, 1.6, 8)})
+      {ctx, osc1} = Context.get_sample(ctx, :main, :osc1, %{frequency: amplitude_to_frequency(osc3, 0.8, 4)})
       {ctx, osc2} = Context.get_sample(ctx, :main, :osc2, %{frequency: amplitude_to_frequency(osc3, 0.4, 2)})
       {ctx, noise} = Context.get_sample(ctx, :main, :noise)
 
