@@ -11,7 +11,7 @@ defmodule Beats do
     {:ok, writer} = WavWriter.open(System.user_home() <> "/beats.wav", header)
     context =
       %Context{output: writer, rate: header.rate}
-      |> Context.put_element(:main, :osc1, %Oscillator{algorithm: :sawtooth, frequency: 1, sync_frequency: 2})
+      |> Context.put_element(:main, :osc1, %Oscillator{algorithm: :sawtooth, frequency: 1, sync_phase: @pi})
       |> Context.put_element(:main, :osc2, %Oscillator{algorithm: :pulse, frequency: 0.5, center: duty_cycle_to_radians(0.75)})
       |> Context.put_element(:main, :osc3, %Oscillator{algorithm: :triangle, frequency: 0.02})
       |> Context.put_element(:main, :noise, %Noise{type: :brown})
