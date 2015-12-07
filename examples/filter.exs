@@ -11,7 +11,7 @@ defmodule Filter do
     {:ok, writer} = WavWriter.open(System.user_home() <> "/filter.wav", header)
     context =
       %Context{output: writer, rate: header.rate}
-      |> Context.put_element(:main, :osc1, %Oscillator{algorithm: :square})
+      |> Context.put_element(:main, :osc1, %Oscillator{algorithm: :sine})
       |> Context.put_element(:main, :lfo, %Oscillator{algorithm: :triangle, frequency: 0.1})
       |> Context.put_element(:main, :filter, %Moog{cutoff: 0.07, resonance: 3.2})
 
