@@ -1,16 +1,17 @@
 defmodule Beats do
   alias Synthex.Context
-  alias Synthex.Output.WavWriter
-  alias Synthex.Output.WavHeader
+  alias Synthex.Output.SoxPlayer
   alias Synthex.Generator.Oscillator
   alias Synthex.Generator.Noise
   use Synthex.Math
 
+  @rate 44100
+
   def run(duration) do
-    header = %WavHeader{channels: 1}
-    {:ok, writer} = WavWriter.open(System.user_home() <> "/beats.wav", header)
+    {:ok, writer} = SoxPlayer.open(rate: @rate, channels: 1)
+
     context =
-      %Context{output: writer, rate: header.rate}
+      %Context{output: writer, rate: @rate}
       |> Context.put_element(:main, :osc1, %Oscillator{algorithm: :sawtooth, frequency: 1, sync_phase: @pi})
       |> Context.put_element(:main, :osc2, %Oscillator{algorithm: :pulse, frequency: 0.5, center: duty_cycle_to_radians(0.75)})
       |> Context.put_element(:main, :osc3, %Oscillator{algorithm: :triangle, frequency: 0.02})
@@ -25,7 +26,7 @@ defmodule Beats do
 
       {ctx, osc1 * noise * shift_by(osc2, 1)}
     end)
-    WavWriter.close(writer)
+    SoxPlayer.close(writer)
   end
 end
 
