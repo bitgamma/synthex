@@ -19,7 +19,8 @@ defmodule Synthex.Generator.Oscillator do
   defp do_get_sample(:sine, %{phase: phase}), do: :math.sin(phase)
   defp do_get_sample(alg, %{phase: phase, center: center}) when alg in [:pulse, :square] and phase < center, do: 1.0
   defp do_get_sample(alg, _state) when alg in [:pulse, :square], do: -1.0
-  defp do_get_sample(:sawtooth, %{phase: phase}), do: 1.0 - (@one_on_pi * phase)
+  defp do_get_sample(:sawtooth, %{phase: phase}), do: (@one_on_pi * phase) - 1.0
+  defp do_get_sample(:reverse_sawtooth, %{phase: phase}), do: 1.0 - (@one_on_pi * phase)
   defp do_get_sample(:triangle, %{phase: phase, center: center}) when phase < center, do: -1.0 + (@two_on_pi * phase)
   defp do_get_sample(:triangle, %{phase: phase}), do: 3.0 - (@two_on_pi * phase)
   defp do_get_sample(func, state) when is_function(func), do: func.(state)

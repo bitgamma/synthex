@@ -7,7 +7,7 @@ defmodule Synthex do
     do_synthesize(ctx, sample_count, func)
   end
 
-  defp do_synthesize(%Context{time: sample_count}, sample_count, _func), do: :ok
+  defp do_synthesize(ctx = %Context{time: sample_count}, sample_count, _func), do: ctx
   defp do_synthesize(ctx = %Context{output: writer, time: t}, sample_count, func) do
     {ctx, samples} = func.(ctx)
     clamped_samples = clamp_all(samples)
