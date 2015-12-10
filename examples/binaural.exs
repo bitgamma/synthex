@@ -9,8 +9,8 @@ defmodule Binaural do
   @carrier 300
   @start_freq @carrier + 20
   @end_freq @carrier + 6
-  @ramp_down_duration 600
-  @ramp_down_freq 1/@ramp_down_duration
+  @rampdown_duration 600
+  @rampdown_freq 1/@rampdown_duration
   @sustain_duration 1200
 
   def run() do
@@ -21,7 +21,7 @@ defmodule Binaural do
     |> Context.put_element(:main, :osc2, %Oscillator{algorithm: :sine})
     |> Context.put_element(:main, :noise, %Noise{type: :brown})
     |> Context.put_element(:main, :lfo, %Oscillator{algorithm: :sawtooth, frequency: 0.2, phase: @pi})
-    |> Context.put_element(:main, :freq, %Oscillator{algorithm: :reverse_sawtooth, frequency: @ramp_down_freq})
+    |> Context.put_element(:main, :freq, %Oscillator{algorithm: :reverse_sawtooth, frequency: @rampdown_freq})
     |> rampdown()
     |> sustain()
 
@@ -33,23 +33,20 @@ defmodule Binaural do
   end
 
   defp rampdown(context) do
-    Synthex.synthesize(context, @ramp_down_duration, fn (ctx) ->
+    synth_phase(context, @rampdown_duration, fn (ctx) ->
       {ctx, freq} = Context.get_sample(ctx, :main, :freq)
-
-      {ctx, osc1} = Context.get_sample(ctx, :main, :osc1)
-      {ctx, osc2} = Context.get_sample(ctx, :main, :osc2, %{frequency: amplitude_to_frequency(freq, @end_freq, @start_freq)})
-
-      {ctx, noise} = Context.get_sample(ctx, :main, :noise)
-      {ctx, lfo} = Context.get_sample(ctx, :main, :lfo)
-
-      {ctx, [apply_noise(osc1, noise, lfo), apply_noise(osc2, noise, lfo)]}
+      Context.get_sample(ctx, :main, :osc2, %{frequency: amplitude_to_frequency(freq, @end_freq, @start_freq)})
     end)
   end
 
   defp sustain(context) do
-    Synthex.synthesize(context, @sustain_duration, fn (ctx) ->
+    synth_phase(context, @rampdown_duration, fn (ctx) -> Context.get_sample(ctx, :main, :osc2) end)
+  end
+
+  defp synth_phase(context, duration, osc2_func) do
+    Synthex.synthesize(context, duration, fn (ctx) ->
+      {ctx, osc2} = osc2_func.(ctx)
       {ctx, osc1} = Context.get_sample(ctx, :main, :osc1)
-      {ctx, osc2} = Context.get_sample(ctx, :main, :osc2)
 
       {ctx, noise} = Context.get_sample(ctx, :main, :noise)
       {ctx, lfo} = Context.get_sample(ctx, :main, :lfo)

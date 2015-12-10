@@ -1,6 +1,6 @@
 # Synthex
 
-A waveform synthesis library. Currently supports output to wav files.
+A signal synthesis library. Currently supports output to wav files.
 
 ## Installation
 
@@ -17,3 +17,14 @@ The package can be installed as:
         def application do
           [applications: [:synthex]]
         end
+
+## How to use
+
+Please take a look at the examples to see how to use it. Development is at a very early stage now, so things may change and break between releases
+
+## TODO
+* More filters (Biquad, FIR) - coming soon
+* Sequencer
+* WAV input
+* Tests
+* Documentation
