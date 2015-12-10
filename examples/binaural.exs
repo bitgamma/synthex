@@ -13,7 +13,7 @@ defmodule Binaural do
   @ramp_down_freq 1/@ramp_down_duration
   @sustain_duration 1200
 
-  def run(duration) do
+  def run() do
     {:ok, writer} = SoxPlayer.open(rate: @rate, channels: 2)
 
     %Context{output: writer, rate: @rate}
