@@ -1,6 +1,6 @@
 # Synthex
 
-A signal synthesis library. Currently supports output to wav files.
+A signal synthesis library. Currently implements basic oscillators and a few filters. Output to WAV file and direct audio output (requires SoX) are supported.
 
 ## Installation
 
