@@ -19,7 +19,7 @@ defmodule Synthex.Output.SoxPlayer do
   def init(%{rate: rate, channels: channels}) do
     args = ['-q', '-t', 'raw', '-L', '-b', '32', '-e', 'floating-point', '-r', Integer.to_char_list(rate), '-c', Integer.to_char_list(channels), '-']
     play = :os.find_executable('play')
-    port = Port.open({:spawn_executable, play}, [{:args, args}, :binary, :out, :stream])
+    port = Port.open({:spawn_executable, play}, [{:args, args}, :stderr_to_stdout, :binary, :stream])
     {:ok, %{port: port}}
   end
 

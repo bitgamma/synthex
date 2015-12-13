@@ -49,7 +49,7 @@ defmodule Synthex.Math do
     end
   end
 
-  def clamp(sample) when sample < -1.0, do: -1.0
-  def clamp(sample) when sample > 1.0, do: 1.0
+  def clamp(sample) when sample <= -1.0, do: -1.0
+  def clamp(sample) when sample >= 1.0, do: 1.0
   def clamp(sample), do: sample
 end
