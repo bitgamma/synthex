@@ -9,12 +9,12 @@ defmodule Sequencer do
 
   @rate 44100
 
-  @note_duration 0.15
+  @bpm 128
   @jingle_bells "|g4-e5-d5-c5-g4-|-g4-g4-e5-d5-c5-a4-|-a4-a4-f5-e5-d5-b4-|-f5-f5-e5-d5-e5-|g4-e5-d5-c5-g4-|-g4-g4-e5-d5-c5-a4-|-a4-a4-f5-e5-d5-b4-|-f5-g5-g5-g5-g5-a5-g5-f5-d5-c5-|e5-e5-e5-|-e5-e5-e5-|-e5-g5-c5-d5-e5-|-f5-f5-f5-f5-f5-|-e5-e5-e5-e5-|-d5-d5-e5-d5-g5|e5-e5-e5-|-e5-e5-e5-|-e5-g5-c5-d5-e5-|-f5-f5-f5-f5-f5-|-e5-e5-e5-e5-|-g5-f5-e5-d5-c5|"
 
   def run() do
     {:ok, writer} = SoxPlayer.open(rate: @rate, channels: 1)
-    sequencer = Sequencer.from_simple_string(@jingle_bells, @note_duration)
+    sequencer = Sequencer.from_simple_string(@jingle_bells, Sequencer.bpm_to_duration(@bpm, 4))
     total_duration = Sequencer.sequence_duration(sequencer)
 
     context =

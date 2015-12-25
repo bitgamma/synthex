@@ -22,5 +22,7 @@ defmodule Synthex.Sequencer do
 
   def sequence_duration(%Sequencer{sequence: sequence, note_duration: note_duration}), do: length(sequence) * note_duration
 
+  def bpm_to_duration(bpm, notes_per_beat), do: 60 / bpm / notes_per_beat
+
   defdelegate from_simple_string(string, note_duration), to: Synthex.Sequencer.SimpleStringFormat
 end
