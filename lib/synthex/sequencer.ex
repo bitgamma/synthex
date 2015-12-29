@@ -4,7 +4,7 @@ defmodule Synthex.Sequencer do
 
   defstruct [sequence: nil, note_duration: 0.15, loop: true, playing_sequence: nil, step: 0]
 
-  @silence {0.0000001, 0.0}
+  @silence {0.000000001, 0.0, :idle}
 
   def get_sample(_ctx, state = %Sequencer{playing_sequence: [], loop: false}), do: {state, @silence}
   def get_sample(ctx, state = %Sequencer{sequence: sequence, playing_sequence: ps, loop: l}) when (ps == nil) or (ps == [] and l == true) do

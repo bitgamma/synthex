@@ -11,7 +11,7 @@ defmodule Sequencer do
 
   @bpm 128
   @jingle_bells "|g4-e5-d5-c5-g4-|-g4-g4-e5-d5-c5-a4-|-a4-a4-f5-e5-d5-b4-|-f5-f5-e5-d5-e5-|g4-e5-d5-c5-g4-|-g4-g4-e5-d5-c5-a4-|-a4-a4-f5-e5-d5-b4-|-f5-g5-g5-g5-g5-a5-g5-f5-d5-c5-|e5-e5-e5-|-e5-e5-e5-|-e5-g5-c5-d5-e5-|-f5-f5-f5-f5-f5-|-e5-e5-e5-e5-|-d5-d5-e5-d5-g5|e5-e5-e5-|-e5-e5-e5-|-e5-g5-c5-d5-e5-|-f5-f5-f5-f5-f5-|-e5-e5-e5-e5-|-g5-f5-e5-d5-c5|"
-  @happy_birthday "--a4--a4--b4--a4--d5--C5---a4--a4--b4--a4-e5--d5----a4--a4-a5--F5--d5--C5---b4--g5-g5--F5--d5--e5--d5"
+  @happy_birthday "|--a4--a4--b4--a4--d5--C5---a4--a4--b4--a4-e5--d5----a4--a4-a5--F5--d5--C5---b4--g5-g5--F5--d5--e5--d5|"
 
   def run() do
     {:ok, writer} = SoxPlayer.open(rate: @rate, channels: 1)
@@ -25,7 +25,7 @@ defmodule Sequencer do
       |> Context.put_element(:main, :sequencer, sequencer)
 
     Synthex.synthesize(context, total_duration, fn (ctx) ->
-      {ctx, {freq, amp}} = Context.get_sample(ctx, :main, :sequencer)
+      {ctx, {freq, amp, _}} = Context.get_sample(ctx, :main, :sequencer)
       {ctx, osc1} = Context.get_sample(ctx, :main, :osc1, %{frequency: freq})
       Context.get_sample(ctx, :main, :filter, %{sample: osc1 * amp})
     end)

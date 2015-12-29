@@ -1,8 +1,6 @@
 defmodule Synthex.Sequencer.SimpleStringFormat do
   alias Synthex.Sequencer
 
-  @silence {0.0000001, 0.0}
-
   @notes %{
     "c8" => 4186.01,
     "b7" => 3951.07,
@@ -97,6 +95,7 @@ defmodule Synthex.Sequencer.SimpleStringFormat do
     sequence = string
     |> String.replace("|", "")
     |> String.replace("-", "--")
+    |> String.replace(">", ">>")
     |> sequence_simple_string([])
 
     %Sequencer{sequence: sequence, note_duration: note_duration}
@@ -105,10 +104,12 @@ defmodule Synthex.Sequencer.SimpleStringFormat do
   defp sequence_simple_string("", sequence), do: Enum.reverse(sequence)
   defp sequence_simple_string(song, sequence) do
     {note, rest} = String.split_at(song, 2)
-    decoded_note = decode_note(note)
+    decoded_note = decode_note(sequence, note)
     sequence_simple_string(rest, [decoded_note | sequence])
   end
 
-  defp decode_note("--"), do: @silence
-  defp decode_note(note), do: {Map.fetch!(@notes, note), 1.0}
+  defp decode_note([{freq, _, _,} | _], "--"), do: {freq, 0.0, :idle}
+  defp decode_note([], "--"), do: {0.000000001, 0.0, :idle}
+  defp decode_note([{freq, amp, _,} | _], ">>"), do: {freq, amp, :sustain}
+  defp decode_note(_prev, note), do: {Map.fetch!(@notes, note), 1.0, :trigger}
 end
