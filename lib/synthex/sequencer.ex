@@ -13,12 +13,14 @@ defmodule Synthex.Sequencer do
   def get_sample(%Context{rate: rate}, state = %Sequencer{playing_sequence: [note | _] = sequence, note_duration: note_duration, step: step}) do
     step_delta = 1 / rate
     {new_sequence, new_step} = get_next_step(step + step_delta, note_duration, sequence)
-
     {%Sequencer{state | playing_sequence: new_sequence, step: new_step}, note}
   end
 
-  defp get_next_step(step, note_duration, sequence) when step < note_duration, do: {sequence, step}
+  defp get_next_step(step, note_duration, sequence) when step < note_duration, do: {with_sustained_note(sequence), step}
   defp get_next_step(step, note_duration, [_note | rest]), do: {rest, step - note_duration}
+
+  defp with_sustained_note([{freq, amp, :trigger} | rest]), do: [{freq, amp, :sustain} | rest]
+  defp with_sustained_note(sequence), do: sequence
 
   def sequence_duration(%Sequencer{sequence: sequence, note_duration: note_duration}), do: length(sequence) * note_duration
 
