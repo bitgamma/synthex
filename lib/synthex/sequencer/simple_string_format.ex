@@ -93,7 +93,7 @@ defmodule Synthex.Sequencer.SimpleStringFormat do
 
   def from_simple_string(string, note_duration) do
     sequence = string
-    |> String.replace("|", "")
+    |> String.replace(~r/[|\n\t\r ]/, "")
     |> String.replace("-", "--")
     |> String.replace(">", ">>")
     |> sequence_simple_string([])
