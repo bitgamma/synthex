@@ -4,7 +4,7 @@ defmodule Synthex.Sequencer do
 
   defstruct [sequence: nil, note_duration: 0.15, loop: true, playing_sequence: nil, step: 0]
 
-  @silence {0.000000001, 0.0, :idle}
+  @silence {0.000000001, 0.0}
 
   def get_sample(_ctx, state = %Sequencer{playing_sequence: [], loop: false}), do: {state, @silence}
   def get_sample(ctx, state = %Sequencer{sequence: sequence, playing_sequence: ps, loop: l}) when (ps == nil) or (ps == [] and l == true) do
@@ -16,11 +16,8 @@ defmodule Synthex.Sequencer do
     {%Sequencer{state | playing_sequence: new_sequence, step: new_step}, note}
   end
 
-  defp get_next_step(step, note_duration, sequence) when step < note_duration, do: {with_sustained_note(sequence), step}
+  defp get_next_step(step, note_duration, sequence) when step < note_duration, do: {sequence, step}
   defp get_next_step(step, note_duration, [_note | rest]), do: {rest, step - note_duration}
-
-  defp with_sustained_note([{freq, amp, :trigger} | rest]), do: [{freq, amp, :sustain} | rest]
-  defp with_sustained_note(sequence), do: sequence
 
   def sequence_duration(%Sequencer{sequence: sequence, note_duration: note_duration}), do: length(sequence) * note_duration
 

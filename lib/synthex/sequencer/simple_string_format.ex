@@ -108,8 +108,8 @@ defmodule Synthex.Sequencer.SimpleStringFormat do
     sequence_simple_string(rest, [decoded_note | sequence])
   end
 
-  defp decode_note([{freq, _, _,} | _], "--"), do: {freq, 0.0, :idle}
-  defp decode_note([], "--"), do: {0.000000001, 0.0, :idle}
-  defp decode_note([{freq, amp, _,} | _], ">>"), do: {freq, amp, :sustain}
-  defp decode_note(_prev, note), do: {Map.fetch!(@notes, note), 1.0, :trigger}
+  defp decode_note([{freq, _} | _], "--"), do: {freq, 0.0}
+  defp decode_note([], "--"), do: {0.000000001, 0.0}
+  defp decode_note([{freq, amp} | _], ">>"), do: {freq, amp}
+  defp decode_note(_prev, note), do: {Map.fetch!(@notes, note), 1.0}
 end
