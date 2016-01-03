@@ -1,7 +1,7 @@
 defmodule Filter do
   alias Synthex.Context
   alias Synthex.Output.WavWriter
-  alias Synthex.Output.WavHeader
+  alias Synthex.File.WavHeader
   alias Synthex.Generator.Oscillator
   alias Synthex.Filter.Moog
   use Synthex.Math

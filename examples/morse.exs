@@ -1,7 +1,7 @@
 defmodule MorseEx do
   alias Synthex.Context
   alias Synthex.Output.WavWriter
-  alias Synthex.Output.WavHeader
+  alias Synthex.File.WavHeader
   alias Synthex.Generator.Oscillator
   alias Synthex.Sequencer
   alias Synthex.Sequencer.Morse
@@ -10,7 +10,7 @@ defmodule MorseEx do
   use Synthex.Math
 
   def run() do
-    header = %WavHeader{channels: 1}
+    header = %WavHeader{channels: 1, format: :float, sample_size: 32}
     {:ok, writer} = WavWriter.open(System.user_home() <> "/morse.wav", header)
 
     sequencer = Morse.from_text("Hello world", Morse.wpm_to_dot_duration(15))

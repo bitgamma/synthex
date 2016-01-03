@@ -24,7 +24,5 @@ Please take a look at the examples to see how to use it. Development is at a ver
 
 ## TODO
 * More filters (FIR) - coming soon
-* Sequencer
-* WAV input
 * Tests
 * Documentation
