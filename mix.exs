@@ -3,7 +3,7 @@ defmodule Synthex.Mixfile do
 
   def project do
     [app: :synthex,
-     version: "0.0.1",
+     version: "0.1.0",
      elixir: "~> 1.1",
      package: package,
      description: description,
