@@ -3,4 +3,5 @@ cover
 deps
 erl_crash.dump
 *.ez
-.idea/workspace.xml
+.idea/**
+*.iml
